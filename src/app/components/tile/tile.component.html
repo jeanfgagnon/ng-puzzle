@@ -1,0 +1,6 @@
+<div *ngIf="tile" class='tile' [ngStyle]="tileStyle"
+    (click)="onClick($event)"
+    (mouseenter)="setBg(true)"
+    (mouseleave)="setBg(false)">
+  {{ tile.face }}
+</div>

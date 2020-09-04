@@ -1,0 +1,3 @@
+<div class='board' [style.width.px]="boardSide" [style.height.px]="boardSide">
+  <app-tile *ngFor="let tile of board" [tile]="tile" (tileClick)="onTileClick($event)"></app-tile>
+</div>
