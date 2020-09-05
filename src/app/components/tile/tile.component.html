@@ -1,4 +1,4 @@
-<div *ngIf="tile" class='tile' [ngStyle]="tileStyle"
+<div *ngIf="tile" class='tile' [ngClass]="{'ripple': !tile.empty}" [ngStyle]="tileStyle"
     (click)="onClick($event)"
     (mouseenter)="setBg(true)"
     (mouseleave)="setBg(false)">

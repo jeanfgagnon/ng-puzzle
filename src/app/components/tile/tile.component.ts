@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, EventEmitter, Output, Renderer2 } from '@angular/core';
 
 import { TileModel } from 'src/app/models/tileModel';
 
@@ -13,10 +13,14 @@ export class TileComponent implements OnInit {
 
   @Output() tileClick = new EventEmitter<TileModel>();
 
-  constructor(private hostElement: ElementRef) { }
+  constructor(
+    private hostElement: ElementRef,
+    private renderer: Renderer2
+    ) { }
 
   ngOnInit(): void {
-    this.hostElement.nativeElement.style.backgroundColor = this.tile.bg;
+    this.renderer.setStyle(this.hostElement.nativeElement, 'background-color', this.tile.bg);
+
   }
 
   // event handlers
@@ -29,8 +33,8 @@ export class TileComponent implements OnInit {
 
   public setBg(isHover: boolean): void {
     if (!this.tile.empty) {
-      this.hostElement.nativeElement.style.backgroundColor = (isHover ? this.tile.hoverBg : this.tile.bg);
-      this.hostElement.nativeElement.style.cursor = (isHover ? 'pointer' : 'arrow');
+      this.renderer.setStyle(this.hostElement.nativeElement, 'background-color', (isHover ? this.tile.hoverBg : this.tile.bg));
+      this.renderer.setStyle(this.hostElement.nativeElement, 'cursor', (isHover ? 'pointer' : 'arrow'));
     }
   }
 

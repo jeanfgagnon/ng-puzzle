@@ -1,3 +1,18 @@
 .tile {
   border: 1px solid black;
 }
+
+.ripple {
+  background-position: center;
+  transition: background 0.5s;
+}
+
+.ripple:hover {
+  background: #e0e0e0 radial-gradient(circle, transparent 1%, #e0e0e0 1%) center/15000%;
+}
+
+.ripple:active {
+  background-color: #c0c0c0;
+  background-size: 100%;
+  transition: background 0s;
+}
