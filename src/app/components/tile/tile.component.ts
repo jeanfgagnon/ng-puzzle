@@ -1,17 +1,20 @@
 import { Component, OnInit, Input, ElementRef, EventEmitter, Output, Renderer2 } from '@angular/core';
 
+import { Animations } from 'src/app/animations';
 import { TileModel } from 'src/app/models/tileModel';
 
 @Component({
   selector: 'app-tile',
   templateUrl: './tile.component.html',
-  styleUrls: ['./tile.component.scss']
+  styleUrls: ['./tile.component.scss'],
+  animations: Animations
 })
 export class TileComponent implements OnInit {
 
   private _tile: TileModel;
 
   @Output() tileClick = new EventEmitter<TileModel>();
+  @Input() moveDirection = '';
 
   constructor(
     private hostElement: ElementRef,
@@ -20,10 +23,14 @@ export class TileComponent implements OnInit {
 
   ngOnInit(): void {
     this.renderer.setStyle(this.hostElement.nativeElement, 'background-color', this.tile.bg);
-
   }
 
   // event handlers
+
+  public onAnimationDone(e: Event): void {
+    //this.tile.moveDirection = '';
+    console.log('fin anim');
+  }
 
   public onClick(e: Event): void {
     if (!this.tile.empty) {

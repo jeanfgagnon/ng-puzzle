@@ -1,4 +1,9 @@
-<div *ngIf="tile" class='tile' [ngClass]="{'ripple': !tile.empty}" [ngStyle]="tileStyle"
+<div *ngIf="tile"
+    [@tileAnimation]="{value: tile.moveDirection, params:{tileSize: tile.size} }"
+    (@tileAnimation.done)="onAnimationDone(tile)"
+    class='tile'
+    [ngClass]="{'ripple': !tile.empty}"
+    [ngStyle]="tileStyle"
     (click)="onClick($event)"
     (mouseenter)="setBg(true)"
     (mouseleave)="setBg(false)">

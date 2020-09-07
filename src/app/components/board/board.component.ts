@@ -34,7 +34,13 @@ export class BoardComponent implements OnInit {
     if (move !== '') {
       // move possible sont: h: haut, b: bas, d: droit, g: gauche
       console.log('Move: %s', move);
-      setTimeout(() => [this.board[tileIndex], this.board[emptyIndex]] = [this.board[emptyIndex], this.board[tileIndex]], 200);
+      tile.moveDirection = move;
+      setTimeout(() =>
+        {
+          [this.board[tileIndex], this.board[emptyIndex]] = [this.board[emptyIndex], this.board[tileIndex]]
+          tile.moveDirection = '';
+        },
+      600);
     }
   }
 
@@ -47,10 +53,18 @@ export class BoardComponent implements OnInit {
 
     if (Math.abs(ydiff) < 2 && Math.abs(xdiff) < 2) {
       if (ydiff === 0 || xdiff === 0) {
-        if (xdiff === -1) rv = 'd';
-        if (xdiff === 1) rv = 'g';
-        if (ydiff === -1) rv = 'b';
-        if (ydiff === 1) rv = 'h';
+        if (xdiff === -1) {
+          rv = 'd';
+        }
+        else if (xdiff === 1) {
+          rv = 'g';
+        }
+        else if (ydiff === -1) {
+          rv = 'b';
+        }
+        else if (ydiff === 1) {
+          rv = 'h';
+        }
       }
     }
 
@@ -74,7 +88,8 @@ export class BoardComponent implements OnInit {
         bg: i === 0 ? '#000000' : '#c0c0c0',
         hoverBg: '#e0e0e0',
         empty: i === 0,
-        size: this.tileSize
+        size: this.tileSize,
+        moveDirection: ''
       };
       this.board.push(tile);
     }

@@ -5,4 +5,5 @@ export class TileModel {
   hoverBg: string;
   size: number;
   empty: boolean;
+  moveDirection: string;
 }
