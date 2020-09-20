@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { TileModel } from 'src/app/models/tileModel';
-import { TileCoord } from 'src/app/models/tileCoord';
+import { TileModel } from 'src/app/models/tile-model';
+import { TileCoord } from 'src/app/models/tile-coord';
 
 @Component({
   selector: 'app-board',
@@ -34,7 +34,7 @@ export class BoardComponent implements OnInit {
     if (move !== '') {
       // move possible sont: h: haut, b: bas, d: droit, g: gauche
       console.log('Move: %s', move);
-      tile.moveDirection = move;
+      //tile.moveDirection = move;
       setTimeout(() =>
         {
           [this.board[tileIndex], this.board[emptyIndex]] = [this.board[emptyIndex], this.board[tileIndex]]

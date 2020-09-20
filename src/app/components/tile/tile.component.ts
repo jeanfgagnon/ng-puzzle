@@ -1,13 +1,12 @@
 import { Component, OnInit, Input, ElementRef, EventEmitter, Output, Renderer2 } from '@angular/core';
 
 import { Animations } from 'src/app/animations';
-import { TileModel } from 'src/app/models/tileModel';
+import { TileModel } from 'src/app/models/tile-model';
 
 @Component({
   selector: 'app-tile',
   templateUrl: './tile.component.html',
-  styleUrls: ['./tile.component.scss'],
-  animations: Animations
+  styleUrls: ['./tile.component.scss']
 })
 export class TileComponent implements OnInit {
 
