@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
+import { StateService } from 'src/app/state.service';
+
 import { TileModel } from 'src/app/models/tile-model';
 import { TileCoord } from 'src/app/models/tile-coord';
+import { MoveMessage } from 'src/app/models/move-message';
+import { TileMove } from "src/app/TileMove";
 
 @Component({
   selector: 'app-board',
@@ -11,17 +15,32 @@ import { TileCoord } from 'src/app/models/tile-coord';
 export class BoardComponent implements OnInit {
 
   public boardSize = 4;
-  public tileSize = 100;
+  public tileSize = 150;
 
   public board: TileModel[] = [];
 
-  constructor() { }
+  constructor(
+    private stateService: StateService
+  ) { }
 
   ngOnInit(): void {
     this.buildBoard();
   }
 
   // event handlers
+
+  public onTileMoved(tile: TileModel): void {
+    const tileIndex = this.board.findIndex(x => x.id === tile.id);
+    const emptyIndex = this.board.findIndex(x => x.empty);
+
+    this.board[emptyIndex].coords.x = tile.coords.x;
+    this.board[emptyIndex].coords.y = tile.coords.y;
+
+    tile.coords.x = tile.coords.fx;
+    tile.coords.y = tile.coords.fy;
+
+    [this.board[tileIndex], this.board[emptyIndex]] = [this.board[emptyIndex], this.board[tileIndex]];
+  }
 
   public onTileClick(tile: TileModel): void {
     const tileIndex = this.board.findIndex(x => x.face === tile.face);
@@ -31,23 +50,41 @@ export class BoardComponent implements OnInit {
     const emptyCoord = this.getCoord(emptyIndex);
 
     const move = this.getMove(tileCoord, emptyCoord);
-    if (move !== '') {
-      // move possible sont: h: haut, b: bas, d: droit, g: gauche
-      console.log('Move: %s', move);
-      //tile.moveDirection = move;
-      setTimeout(() =>
-        {
-          [this.board[tileIndex], this.board[emptyIndex]] = [this.board[emptyIndex], this.board[tileIndex]]
-          tile.moveDirection = '';
-        },
-      600);
+    if (move !== null) {
+      this.computeTileFuturePos(tile, move);
+      const moveMessage: MoveMessage = {
+        tileId: tile.id,
+        moveDir: move
+      };
+      this.stateService.sendMessage(moveMessage);
+      //[this.board[tileIndex], this.board[emptyIndex]] = [this.board[emptyIndex], this.board[tileIndex]]
     }
   }
 
   // private
 
-  private getMove(tc: TileCoord, ec: TileCoord): string {
-    let rv = '';
+  private computeTileFuturePos(tile: TileModel, move: TileMove) {
+    switch (move) {
+      case 'g':
+        tile.coords.fx = tile.coords.x - tile.size;
+        break;
+
+      case 'd':
+        tile.coords.fx = tile.coords.x + tile.size;
+        break;
+
+      case 'h':
+        tile.coords.fy = tile.coords.y - tile.size;
+        break;
+
+      case 'b':
+        tile.coords.fy = tile.coords.y + tile.size;
+        break;
+    }
+  }
+
+  private getMove(tc: TileCoord, ec: TileCoord): TileMove | null {
+    let rv: TileMove = null;
     const ydiff = tc.y - ec.y;
     const xdiff = tc.x - ec.x;
 
@@ -81,28 +118,45 @@ export class BoardComponent implements OnInit {
   }
 
   private buildBoard(): void {
-    for (let i = 0; i < (this.boardSize * this.boardSize); i++) {
-      const tile: TileModel = {
-        face: i === 0 ? '' : i.toString(),
-        color: '#000000',
-        bg: i === 0 ? '#000000' : '#c0c0c0',
-        hoverBg: '#e0e0e0',
-        empty: i === 0,
-        size: this.tileSize,
-        moveDirection: ''
-      };
-      this.board.push(tile);
+    let tileIndex = 0;
+    for (let y = 0; y < this.boardSize; y++) {
+      for (let x = 0; x < this.boardSize; x++) {
+
+        const tile: TileModel = {
+          id: `tile${tileIndex}`,
+          face: tileIndex === 0 ? '' : tileIndex.toString(),
+          color: '#000000',
+          bg: tileIndex === 0 ? '#000000' : '#c0c0c0',
+          hoverBg: '#e0e0e0',
+          empty: tileIndex === 0,
+          size: this.tileSize,
+          coords: {
+            x: x * this.tileSize,
+            fx: x * this.tileSize,
+            y: y * this.tileSize,
+            fy: y * this.tileSize
+          }
+        };
+
+        this.board.push(tile);
+        tileIndex++;
+      }
     }
 
     for (let i = this.board.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [this.board[i], this.board[j]] = [this.board[j], this.board[i]];
+      this.switchTile(i, j);
     }
+  }
+
+  private switchTile(src: number, dst: number): void {
+    [this.board[src], this.board[dst]] = [this.board[dst], this.board[src]];
+    [this.board[dst].coords, this.board[src].coords] = [this.board[src].coords, this.board[dst].coords];
   }
 
   // properties
 
   public get boardSide(): number {
-    return (this.tileSize + 2) * this.boardSize;
+    return (this.tileSize + 1) * this.boardSize;
   }
 }

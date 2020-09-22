@@ -1,5 +1,7 @@
-<div class='parent'>
-  <div class='child board' [style.width.px]="boardSide" [style.height.px]="boardSide">
-    <app-tile *ngFor="let tile of board" [tile]="tile" (tileClick)="onTileClick($event)"></app-tile>
-  </div>
+<div class='board' [style.width.px]="boardSide" [style.height.px]="boardSide">
+  <app-tile *ngFor="let tile of board"
+    [tile]="tile"
+    (tileClick)="onTileClick($event)"
+    (moveDone)="onTileMoved($event)">
+  </app-tile>
 </div>
