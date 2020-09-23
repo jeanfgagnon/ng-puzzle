@@ -143,15 +143,15 @@ export class BoardComponent implements OnInit {
       }
     }
 
-    for (let i = this.board.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      this.switchTile(i, j);
-    }
+    this.shuffleBoard();
   }
 
-  private switchTile(src: number, dst: number): void {
-    [this.board[src], this.board[dst]] = [this.board[dst], this.board[src]];
-    [this.board[dst].coords, this.board[src].coords] = [this.board[src].coords, this.board[dst].coords];
+  private shuffleBoard(): void {
+    for (let src = this.board.length - 1; src > 0; src--) {
+      const dst = Math.floor(Math.random() * (src + 1));
+      [this.board[src], this.board[dst]] = [this.board[dst], this.board[src]];
+      [this.board[dst].coords, this.board[src].coords] = [this.board[src].coords, this.board[dst].coords];
+    }
   }
 
   // properties
